@@ -1,0 +1,79 @@
+############################################################
+# ZINIT section
+############################################################
+# Set the directory we want to store zinit and plugins
+ZINIT_HOME="${XDG_DATA_HOME:-${HOME}/.local/share}/zinit/zinit.git"
+
+# Download Zinit, if it's not there yet
+if [ ! -d "$ZINIT_HOME" ]; then
+   mkdir -p "$(dirname $ZINIT_HOME)"
+   git clone https://github.com/zdharma-continuum/zinit.git "$ZINIT_HOME"
+fi
+
+# Source/Load zinit
+source "${ZINIT_HOME}/zinit.zsh"
+############################################################
+
+
+eval "$(starship init zsh)"
+
+
+
+zinit light zsh-users/zsh-syntax-highlighting
+zinit light zsh-users/zsh-completions
+zinit light zsh-users/zsh-autosuggestions
+
+# accept autosuggestion with ctrl+F
+bindkey '^f' autosuggest-accept
+
+
+# Load completions
+autoload -Uz compinit && compinit
+
+
+# History
+HISTSIZE=15000
+HISTFILE=~/.zsh_history
+SAVEHIST=$HISTSIZE
+
+setopt appendhistory # append to history file
+setopt sharehistory # share history between sessions
+setopt extendedhistory # store :start:elapsed;command in history file
+
+
+# zsh-fzf-history-search
+# ctrl r for fuzzy history search
+zinit ice lucid wait'0'
+zinit light joshskidmore/zsh-fzf-history-search
+
+# when fzf >= 0.48 available
+#FZFPATH=/opt/spack/opt/spack/linux-debian12-skylake/gcc-12.2.0/fzf-0.46.1-ibyhvhwklzweocl73rpnz3v23dqw7jfi/bin/fzf
+#eval "$(${FZFPATH} --zsh)"
+
+zplugin ice wait"0"
+zplugin load ael-code/zsh-colored-man-pages
+
+zplugin ice atclone"dircolors -b LS_COLORS > c.zsh" atpull'%atclone' pick"c.zsh"
+zplugin load trapd00r/LS_COLORS
+
+# better syntax highligh, for exemple git commit has better highlights
+zplugin ice wait"0" atinit"zpcompinit; zpcdreplay"
+zplugin load zdharma/fast-syntax-highlighting
+
+
+# Do menu-driven completion.
+zstyle ':completion:*' menu select
+
+# Color completion for some things.
+# http://linuxshellaccount.blogspot.com/2008/12/color-completion-using-zsh-modules-on.html
+zstyle ':completion:*' list-colors ${(s.:.)LS_COLORS}
+
+# formatting and messages
+# http://www.masterzen.fr/2009/04/19/in-love-with-zsh-part-one/
+zstyle ':completion:*' verbose yes
+zstyle ':completion:*:descriptions' format "$fg[yellow]%B--- %d%b"
+zstyle ':completion:*:messages' format '%d'
+zstyle ':completion:*:warnings' format "$fg[red]No matches for:$reset_color %d"
+zstyle ':completion:*:corrections' format '%B%d (errors: %e)%b'
+zstyle ':completion:*' group-name ''
+### End of Zinit's installer chunk

@@ -1,0 +1,15 @@
+#!/bin/zsh
+
+if which eza > /dev/null; then
+  alias ls="eza --hyperlink"
+  alias lah="eza -lah --hyperlink"
+  alias lh="eza -lh --hyperlink"
+elif which exa > /dev/null; then
+  alias ls="exa"
+  alias lah="exa -lah"
+  alias lh="exa -lh"
+else
+  alias ls="ls --color"
+  alias lah="ls -lah -lah"
+  alias lh="ls -lh"
+fi
